@@ -117,11 +117,12 @@ class Graph(object):
         hdr = '{:<20} {:<30} {:>20} {:>20}'.format('Type', 'Name', 'Param', 'Output')
         s = [hdr, '-' * 94]
         for node in self.topologically_sorted():
+            if node.data: node.data = list(node.data)
             # If the node has learned parameters, display the first one's shape.
             # In case of convolutions, this corresponds to the weights.
             data_shape = node.data[0].shape if node.data else '--'
             out_shape = node.output_shape or '--'
-            s.append('{:<20} {:<30} {:>20} {:>20}'.format(node.kind, node.name, data_shape,
+            s.append('{!s:<20} {!s:<30} {!s:>20} {!s:>20}'.format(node.kind, node.name, data_shape,
                                                           tuple(out_shape)))
         return '\n'.join(s)
 
@@ -142,7 +143,7 @@ class GraphBuilder(object):
     def load(self):
         '''Load the layer definitions from the prototxt.'''
         self.params = get_caffe_resolver().NetParameter()
-        with open(self.def_path, 'rb') as def_file:
+        with open(self.def_path, 'r') as def_file:
             text_format.Merge(def_file.read(), self.params)
 
     def filter_layers(self, layers):

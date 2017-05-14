@@ -1,3 +1,5 @@
+import sys
+
 import numpy as np
 
 from ..errors import KaffeError, print_stderr
@@ -7,6 +9,15 @@ from ..transformers import (DataInjector, DataReshaper, NodeRenamer, ReLUFuser,
                             BatchNormScaleBiasFuser, BatchNormPreprocessor, ParameterNamer)
 
 from . import network
+
+
+if sys.version_info[0] < 3:
+    basestring = basestring
+else:
+    str = str
+    unicode = str
+    bytes = bytes
+    basestring = (str, bytes)
 
 
 def get_padding_type(kernel_params, input_shape, output_shape):
@@ -53,7 +64,7 @@ class TensorFlowNode(object):
     def emit(self):
         '''Emits the Python source for this node.'''
         # Format positional arguments
-        args = map(self.format, self.args)
+        args = list(map(self.format, self.args))
         # Format any keyword arguments
         if self.kwargs:
             args += [self.pair(k, v) for k, v in self.kwargs]
