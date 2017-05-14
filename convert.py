@@ -58,3 +58,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# python convert.py --caffemodel=D:\GIT\person_tracking\person_tracking\data\face\deploy.caffemodel --code-output-path=D:\GIT\person_tracking\person_tracking\data\face\deploy.tf.py --data-output-path=D:\GIT\person_tracking\person_tracking\data\face\deploy.tf.hd5 D:\GIT\person_tracking\person_tracking\data\face\deploy.prototxt
