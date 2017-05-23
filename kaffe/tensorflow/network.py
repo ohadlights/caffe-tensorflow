@@ -1,7 +1,17 @@
 import numpy as np
 import tensorflow as tf
+import sys
 
 DEFAULT_PADDING = 'SAME'
+
+if sys.version_info[0] < 3:
+    basestring = basestring
+else:
+    str = str
+    unicode = str
+    bytes = bytes
+    basestring = (str, bytes)
+
 
 
 def layer(op):
@@ -59,7 +69,7 @@ class Network(object):
         data_dict = np.load(data_path).item()
         for op_name in data_dict:
             with tf.variable_scope(op_name, reuse=True):
-                for param_name, data in data_dict[op_name].iteritems():
+                for param_name, data in data_dict[op_name].items():
                     try:
                         var = tf.get_variable(param_name)
                         session.run(var.assign(data))
@@ -124,7 +134,7 @@ class Network(object):
         # Convolution for a given input and kernel
         convolve = lambda i, k: tf.nn.conv2d(i, k, [1, s_h, s_w, 1], padding=padding)
         with tf.variable_scope(name) as scope:
-            kernel = self.make_var('weights', shape=[k_h, k_w, c_i / group, c_o])
+            kernel = self.make_var('weights', shape=[k_h, k_w, c_i.value / group, c_o])
             if group == 1:
                 # This is the common-case. Convolve the input without any further complications.
                 output = convolve(input, kernel)
